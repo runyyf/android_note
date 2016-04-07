@@ -1,0 +1,188 @@
+Android/Log 
+		Log.v(),Log.d(),Log.i(),Log.w(),Log.e()
+		ex:
+		  log.d(string target,string message)
+  
+Button 类下的 
+		setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v){
+				Toast.makeText(HelloWorldActivity.this, "you click the button1 !! ",
+					Toast.LENGTH_SHORT).show(); 			// 弹窗
+				finish();                           // 退出app
+			}
+		});
+
+
+//注册活动
+				<activity android:name=".SecondActivity" >
+				</activity>
+
+
+// 切换activity
+intent  
+
+				显式intent
+				
+				Intent intent = new Intent(LayoutTest.this,SecondActivity.class);
+				startActivity(intent);
+				
+				隐式intent
+				
+				Intent intent = new Intent("com.test.layouttest.ACTION_START");
+				intent.addCategory(Intent.CATEGORY_DEFAULT);
+				startActivity(intent);//默认参数android.intent.category.DEFAULT
+				
+				
+				</activity>
+				     <activity android:name=".SecondActivity" > //关联的类名
+				      <intent-filter>
+				       		<action android:name="com.test.layouttest.ACTION_START"  />
+				       		<category android:name="android.intent.category.DEFAULT" /> 
+				       </intent-filter>
+				</activity>
+				
+				//打开浏览器，应用之间切换
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setData(Uri.parse("http://www.baidu.com"));
+				startActivity(intent);
+
+				//打开电话
+				Intent intent = new Intent(Intent.ACTION_DIAL);
+				intent.setData(Uri.parse("tel:10086"));
+				startActivity(intent);
+
+intent传送数据
+
+				//发送
+				String data = "Hello SecondActivity";
+				Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+				intent.putExtra("extra_data", data);
+				startActivity(intent);
+				//接受
+				Intent intent = getIntent();
+				String data = intent.getStringExtra("extra_data");
+				Log.d("SecondActivity", data);
+				
+				回传数据给上一个活动
+				//FirstActivity.java
+				Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+				startActivityForResult(intent, 1);
+				
+				//FirstActivity.java重写onActivityResult
+				protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+					switch (requestCode) {
+						case 1:
+								if (resultCode == RESULT_OK) {
+									String returnedData = data.getStringExtra("data_return");
+									Log.d("FirstActivity", returnedData);
+								}
+								break;
+						default:
+					}
+				}
+				
+				//SecondActivity.java
+				Intent intent = new Intent();
+				intent.putExtra("data_return", "Hello FirstActivity");
+				setResult(RESULT_OK, intent);
+				finish();
+				
+				//如果是希望back键返回数据
+				重写public void onBackPressed()方法
+				
+
+activity的四种状态
+1.活动 2暂停 3停止（仍然在返回栈中，但是并不可靠）4销毁状态
+
+activity的七个回调
+1.onCreate()方法
+2.onStart() 由不可见到可见
+3.onResume()
+4.onPause()
+5.onStop()
+6.onDestroy()
+7.onRestart()
+
+
+logcat用 dataName|Tag过滤
+
+当一个活动处于stop状态时，在系统内存不足的时候会被回收，然后按back键回到活动
+这个时候就不是调用onRestart,而是调用onCreat,那么原来活动中的数据就会丢失，这个时候可以
+使用saveInstanceState()回调，这个在活动回收之前一定会调用
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		String tempData = "Something you just typed";
+		outState.putString("data_key", tempData);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_main);
+		if (savedInstanceState != null) {
+			String tempData = savedInstanceState.getString("data_key");
+			Log.d(TAG, tempData);
+		}
+		……
+	}
+
+activity module
+1.standard   
+2.singleTop  //当activity在返回栈的栈顶时，则不重新创建实例
+3.singleTask
+	当活动的启动模式指定为singleTask，每次启动该活动时系统首先
+会在返回栈中检查是否存在该活动的实例，如果发现已经存在则直接使用该实例，并把在这
+个活动之上的所有活动统统出栈，如果没有发现就会创建一个新的活动实例。
+
+4.singleInstance 用于多个程序需要调用一个返回栈的时候选择的模式
+  在activity中将android:launchMode="singleInstance"
+
+TIPS:
+	当维护不是自己写的代码时，有时为了了解activity的调用顺序，这个时候我们可以创建一个
+	baseActivity
+	public class BaseActivity extends Activity {
+	@Override
+		protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d("BaseActivity", getClass().getSimpleName());
+		}
+	}
+	让所有的activity类都继承于这个类。
+	
+//新建一个ActivityCollector类来管理所有类，所有方法均为静态方法，可以随时调用，关闭所有活动
+public class ActivityCollector {
+	public static List<Activity> activities = new ArrayList<Activity>();
+	public static void addActivity(Activity activity) {
+		activities.add(activity);
+	}
+	public static void removeActivity(Activity activity) {
+		activities.remove(activity);
+	}
+	public static void finishAll() {
+		for (Activity activity : activities) {
+			if (!activity.isFinishing()) {
+				activity.finish();
+			}
+		}
+	}
+}
+
+活动一般写法，用一个actionStart来启动
+public class SecondActivity extends BaseActivity {
+	public static void actionStart(Context context, String data1, String data2) {
+		Intent intent = new Intent(context, SecondActivity.class);
+		intent.putExtra("param1", data1);
+		intent.putExtra("param2", data2);
+		context.startActivity(intent);
+	}
+	……
+}
+
+
+
+
+

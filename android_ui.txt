@@ -1,0 +1,38 @@
+Xml
+
+Toast android.widget.Toast.makeText(Context context, CharSequence text, int duration)
+context为对象，如activity。
+
+android:layout_width="match_parent"  //match_parent  为继承父类大小
+android:layout_height="wrap_content" //wrap_content  根据内容显示
+android:layout_below="@+id/first" //在某元素的的下方，默认是顶端对齐  
+android:hint 指定提示性文本
+
+android:textSize 单位dp,sp
+dp：（与密度无关的像素），一种基于屏幕密度的抽象单位。在每英寸160点的显示器上，1dp = 1px。
+sp：scaled pixels(放大像素)，主要用于字体显示best for textsize。与dp类似，但是可以根据用户的字体大小首选项进行缩放。 
+
+//关于button对于实现OnClickListener接口
+1.调用setOnClickListener中新建一个OnClickListener匿名类并实现onClick方法
+2.在activity中implements onClickListener,并且重写onClick方法
+
+imageView 为图片的标签， 在res的drawable-hdpi中直接加入， setImageResource
+progressBar android:visibility = visible/invisible(透明)/gone
+	1.getVisibility和setVisiblity
+	2.style="?android:attr/progressBarStyleHorizontal" 指定为水平风格
+
+alertDialog--AlertDialog.Builder
+	dialog.setCancelable(false);//按返回键不能退出，系统默认是true
+	dialog.setPositiveButton  , dialog.setNegativeButton  show();   dismiss()方法
+ProgressDialog--ProgressDialog  //带有进度条的
+
+
+
+四大基本布局
+1.linearLayout
+
+
+
+
+
+
