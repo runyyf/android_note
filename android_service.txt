@@ -1,0 +1,19 @@
+关于线程
+1.在子线程中更新ui会导致程序报错
+2如果需要则要使用Handler和Message;最后Handler的handleMessage 
+
+
+执行相对简单的后台服务，可以直接用intentService
+for example
+	public class MyIntentService extends IntentService{
+	
+		MyIntentService(){
+			super(MyIntentService.class.getName());
+		}
+		
+		protected void onHandleIntent(Intent intent){
+			//add something you want to do 
+		}
+	}
+
+能在消息栏显示通知，将服务设置到前台

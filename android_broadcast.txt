@@ -1,0 +1,7 @@
+1.动态注册广播  -代码中 完成后一定要在onDestroy中调用unregisterReceiver来
+2.静态注册广播  -在xml中完成注册
+
+1.动态注册
+	调用registerReceiver（）函数注册，入口需要两个参数BroadcastReceiver类和intentFilter类
+	BroadcastReceiver重写其中的onReceive方法
+	intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE")添加需要接受广播action	
